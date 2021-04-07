@@ -1,7 +1,12 @@
 package android.exercise.mini.interactions;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -11,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class EditTitleActivity extends AppCompatActivity {
-
+  private boolean isEditing = false;
   // TODO:
   //  you can add fields to this class. those fields will be accessibly inside any method
   //  (like `onCreate()` and `onBackPressed()` methods)
@@ -54,6 +59,15 @@ public class EditTitleActivity extends AppCompatActivity {
 
       to complete (1.) & (2.), start by just changing visibility. only add animations after everything else is ready
        */
+      this.isEditing = true;
+      fabStartEdit.animate().alpha(0f).setInterpolator(new AccelerateInterpolator()).setDuration(1000).withEndAction(() -> {
+        fabEditDone.animate().alpha(1f).setInterpolator(new DecelerateInterpolator()).setDuration(1000).start();
+        fabStartEdit.setVisibility(View.GONE);
+        fabEditDone.setVisibility(View.VISIBLE);
+      }).start();
+      textViewTitle.setVisibility(View.GONE);
+      editTextTitle.setVisibility(View.VISIBLE);
+      editTextTitle.setText(textViewTitle.getText());
     });
 
     // handle clicks on "done edit"
@@ -69,6 +83,17 @@ public class EditTitleActivity extends AppCompatActivity {
 
       to complete (1.) & (2.), start by just changing visibility. only add animations after everything else is ready
        */
+      fabEditDone.animate().alpha(0f).setInterpolator(new AccelerateInterpolator()).setDuration(1000L).withEndAction(() -> {
+        fabStartEdit.animate().alpha(1f).setInterpolator(new DecelerateInterpolator()).setDuration(1000L).start();
+        fabEditDone.setVisibility(View.GONE);
+        fabStartEdit.setVisibility(View.VISIBLE);
+      }).start();
+      textViewTitle.setText(editTextTitle.getText());
+      editTextTitle.setVisibility(View.GONE);
+      textViewTitle.setVisibility(View.VISIBLE);
+      InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+      imm.hideSoftInputFromWindow(textViewTitle.getWindowToken(),0);
+      this.isEditing = false;
     });
   }
 
@@ -90,5 +115,24 @@ public class EditTitleActivity extends AppCompatActivity {
     to work with views, you will need to find them first.
     to find views call `findViewById()` in a same way like in `onCreate()`
      */
+    if (this.isEditing)
+    {
+      EditText editTextTitle = findViewById(R.id.editTextPageTitle);
+      TextView textViewTitle = findViewById(R.id.textViewPageTitle);
+      FloatingActionButton fabStartEdit = findViewById(R.id.fab_start_edit);
+      FloatingActionButton fabEditDone = findViewById(R.id.fab_edit_done);
+      editTextTitle.setVisibility(View.GONE);
+      textViewTitle.setVisibility(View.VISIBLE);
+      fabEditDone.animate().alpha(0f).setInterpolator(new AccelerateInterpolator()).setDuration(1000L).withEndAction(() -> {
+        fabStartEdit.animate().alpha(1f).setInterpolator(new DecelerateInterpolator()).setDuration(1000L).start();
+        fabEditDone.setVisibility(View.GONE);
+        fabStartEdit.setVisibility(View.VISIBLE);
+      }).start();
+      this.isEditing = false;
+    }
+    else
+    {
+      super.onBackPressed();
+    }
   }
 }
