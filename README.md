@@ -19,3 +19,5 @@ You should install the "Google Licensing library". To do that:
 
 See screenshot below:
 ![steps to install Licensing library](install_license_explanation.png)
+
+"I pledge the highest level of ethical principles in support of academic excellence.  I ensure that all of my work reflects my own abilities and not those of someone else."
